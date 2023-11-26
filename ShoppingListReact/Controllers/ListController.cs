@@ -18,11 +18,24 @@ namespace ShoppingListReact.Controllers
 
         // Create item
         [HttpPost]
-        public void AddItem(string itemID)
+        public void AddItem(string itemID, int requestedQuantity)
         {
             ListData listData = new ListData(_config);
 
-            // Grab item from DB to add to our list
+            // Grab item from DB, returned as a model
+            ItemModel vendorItemModel = listData.LoadFromVendor(itemID);
+
+            // Create ShoppingList item model from vendor item model and requestedQuantity. Derive total cost from quantity * itemModel.price
+            ShoppingListItemModel shoppingListModel = new ShoppingListItemModel
+            {
+                Id = vendorItemModel.Id,
+                ItemName = vendorItemModel.ItemName,
+                ItemDescription = vendorItemModel.ItemDescription,
+                UnitPrice = vendorItemModel.Price,
+                RequestedQuantity = requestedQuantity
+            };
+
+            listData.AddToShoppingList(shoppingListModel);
         }
 
         // Get item(s)

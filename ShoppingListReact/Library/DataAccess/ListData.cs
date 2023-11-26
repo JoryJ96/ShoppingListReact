@@ -29,5 +29,29 @@ namespace ShoppingListReact.Library.DataAccess
                 return new BadRequestResult();
             }
         }
+
+        internal ItemModel LoadFromVendor(string itemID)
+        {
+            SqlDataAccess sql = new SqlDataAccess(_config);
+
+            ItemModel returnModel = null;
+
+            dynamic p = new
+            {
+                itemID = itemID,
+            };
+
+            try
+            {
+                returnModel = sql.LoadData("spItem_LoadFromVendor", p, "DefaultConnection");
+
+                return returnModel;
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+
+                return returnModel;
+            }
+        }
     }
 }
