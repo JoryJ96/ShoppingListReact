@@ -18,31 +18,21 @@ namespace ShoppingListReact.Controllers
 
         // Create item
         [HttpPost]
-        public void AddItem(string itemID, int requestedQuantity)
+        public void AddItem(string userID, string itemID, string listName, int requestedQuantity)
         {
             ListData listData = new ListData(_config);
 
-            // Grab item from DB, returned as a model
-            ItemModel vendorItemModel = listData.LoadFromVendor(itemID);
-
-            // Create ShoppingList item model from vendor item model and requestedQuantity. Derive total cost from quantity * itemModel.price
-            ShoppingListItemModel shoppingListModel = new ShoppingListItemModel
-            {
-                Id = vendorItemModel.Id,
-                ItemName = vendorItemModel.ItemName,
-                ItemDescription = vendorItemModel.ItemDescription,
-                UnitPrice = vendorItemModel.Price,
-                RequestedQuantity = requestedQuantity
-            };
-
-            listData.AddToShoppingList(shoppingListModel);
+            listData.AddToShoppingList(userID, itemID, listName, requestedQuantity);
         }
 
         // Get item(s)
         [HttpGet]
-        public void GetItems()
+        public void GetItems(string userID, string listName)
         {
-            throw new NotImplementedException();
+            ListData listData = new ListData(_config);
+
+            // Grab all items from Shopping List
+            List<ShoppingListItemModel> shoppingList = listData.GetShoppingList(userID, listName);
         }
 
         // Update item(s)
@@ -52,6 +42,7 @@ namespace ShoppingListReact.Controllers
             throw new NotImplementedException();
         }
 
+        [HttpDelete]
         // Delete item(s)
         public void DeleteItem(string itemID)
         {
